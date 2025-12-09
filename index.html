@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>房地合一稅 & 土增稅重購退稅試算 | 劉鴻恩 協理</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -17,11 +17,18 @@
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        /* 確保 html 和 body 不會產生水平滾動條 */
+        html, body {
+            overflow-x: hidden;
+            width: 100%;
+        }
+
         body {
             font-family: "PingFang TC", "Microsoft JhengHei", sans-serif;
             background-color: var(--bg-color);
             margin: 0;
-            padding-bottom: 80px;
+            padding-bottom: 80px; /* 預留底部空間給懸浮按鈕 */
             min-height: 100vh;
         }
 
@@ -29,35 +36,65 @@
         header {
             background: var(--white);
             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            padding: 15px 20px;
+            padding: 12px 20px;
             position: sticky; top: 0; z-index: 1000;
             display: flex; justify-content: space-between; align-items: center;
         }
-        .logo-area img { height: 45px; object-fit: contain; }
+        .logo-area img { height: 40px; object-fit: contain; }
         .brand-info { text-align: right; border-left: 3px solid var(--accent-cyan); padding-left: 12px; }
-        .brand-name { font-size: 1.2rem; font-weight: 800; color: var(--primary-blue); margin: 0; }
-        .brand-title { font-size: 0.85rem; color: #666; margin: 0; }
+        .brand-name { font-size: 1.1rem; font-weight: 800; color: var(--primary-blue); margin: 0; }
+        .brand-title { font-size: 0.8rem; color: #666; margin: 0; }
 
         /* --- 背景形象照 --- */
         .vincent-bg {
-            position: fixed; bottom: 0; right: -10px; width: 40vh; max-width: 350px;
+            position: fixed; bottom: 0; right: -10px; 
+            width: 40vh; max-width: 350px;
             opacity: 0.9; pointer-events: none; z-index: 0;
             filter: drop-shadow(-5px 5px 10px rgba(0,0,0,0.1));
+            transition: all 0.3s ease;
         }
-        @media (max-width: 768px) { .vincent-bg { width: 55vw; opacity: 0.25; right: -5vw; } }
 
-        /* --- 核心卡片 --- */
+        /* --- 核心卡片區塊 --- */
         .container {
-            max-width: 700px; margin: 30px auto; padding: 0 20px;
+            /* 電腦版預設寬度 */
+            max-width: 700px; 
+            margin: 40px auto; 
+            padding: 0 25px; /* 左右留白 */
             position: relative; z-index: 10;
         }
 
         .calculator-card {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
-            border-radius: 16px; padding: 25px;
+            border-radius: 16px; 
+            padding: 30px; /* 電腦版內部留白 */
             box-shadow: 0 10px 25px rgba(0,96,169, 0.1);
             border: 1px solid rgba(255,255,255,0.8);
+        }
+
+        /* --- 📱 重點：手機版針對性優化 (Media Query) --- */
+        /* 當螢幕寬度小於 768px (平板直向或手機) 時應用 */
+        @media (max-width: 768px) {
+            header { padding: 10px 15px; }
+            .logo-area img { height: 35px; }
+            .brand-name { font-size: 1rem; }
+
+            .container {
+                margin: 25px auto; /* 上下間距縮小 */
+                padding: 0 12px;   /* 關鍵：左右留白縮小，防止切邊 */
+                width: 100%;       /* 確保佔滿可用空間 */
+            }
+
+            .calculator-card {
+                padding: 20px 15px; /* 關鍵：內部空間縮小，讓內容有更多位置 */
+            }
+
+            /* 背景圖在手機上更透明、更往角落退 */
+            .vincent-bg {
+                width: 50vw; 
+                opacity: 0.25; 
+                right: -30px; /* 往右推避免蓋住內容 */
+            }
         }
 
         /* --- 切換開關 --- */
@@ -69,11 +106,15 @@
             flex: 1; padding: 12px; border: none; background: transparent;
             font-size: 1rem; font-weight: bold; color: #666;
             cursor: pointer; border-radius: 8px; transition: all 0.3s;
+            white-space: nowrap; /* 防止文字換行 */
         }
         .switch-btn.active {
             background: var(--white); color: var(--primary-blue);
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
+        /* 手機版切換按鈕稍微縮小字體 */
+        @media (max-width: 400px) { .switch-btn { font-size: 0.9rem; padding: 10px; } }
+
 
         /* --- 表單通用 --- */
         .form-section { display: none; animation: fadeIn 0.4s; }
@@ -81,19 +122,29 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
         .form-group { margin-bottom: 18px; }
-        .form-label { display: block; margin-bottom: 6px; font-weight: bold; color: #333; }
+        .form-label { display: block; margin-bottom: 6px; font-weight: bold; color: #333; font-size: 1rem; }
         .input-group {
             display: flex; align-items: center; background: #fff;
             border: 2px solid #ddd; border-radius: 8px; overflow: hidden;
             transition: border-color 0.3s;
         }
         .input-group:focus-within { border-color: var(--accent-cyan); }
-        .input-icon { padding: 12px 15px; background: #f8f9fa; color: #666; border-right: 1px solid #ddd; }
+        .input-icon { padding: 12px 15px; background: #f8f9fa; color: #666; border-right: 1px solid #ddd; font-size: 1.1rem; }
         
         .form-control { 
             width: 100%; padding: 12px; border: none; font-size: 1.1rem; 
             outline: none; background: transparent; color: #333;
+            min-width: 0; /* 修復 flex 子元素溢出問題 */
         }
+        
+        /* 手機版輸入框微調 */
+        @media (max-width: 768px) {
+            .form-label { font-size: 0.95rem; margin-bottom: 4px; }
+            .form-control { padding: 10px; font-size: 1rem; }
+            .input-icon { padding: 10px 12px; font-size: 1rem; }
+            .form-group { margin-bottom: 15px; }
+        }
+
 
         /* Placeholder 樣式 (65% 顯示度) */
         ::-webkit-input-placeholder { color: rgba(0, 0, 0, 0.65); font-weight: 500; }
@@ -117,20 +168,29 @@
             border-left: 5px solid var(--primary-blue);
             display: none;
         }
-        .result-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .result-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; }
         .result-label { font-size: 1rem; color: #555; }
-        .result-val { font-size: 1.5rem; font-weight: bold; color: var(--primary-blue); }
+        .result-val { font-size: 1.5rem; font-weight: bold; color: var(--primary-blue); white-space: nowrap; }
         .refund-msg { 
             margin-top: 15px; padding-top: 15px; border-top: 1px dashed #bcd;
             color: #28a745; font-weight: bold; font-size: 1.1rem; text-align: center;
+            line-height: 1.4;
         }
+        /* 手機版結果區微調 */
+        @media (max-width: 400px) {
+            .result-val { font-size: 1.3rem; }
+            .result-label { font-size: 0.95rem; }
+        }
+
 
         /* --- 重要提醒 --- */
         .notice-box {
             margin-top: 30px; background: var(--warning-bg);
             padding: 20px; border-radius: 10px; color: var(--warning-text);
             border: 1px solid #ffeeba; font-size: 0.95rem;
+            line-height: 1.6;
         }
+        @media (max-width: 768px) { .notice-box { padding: 15px; } }
         .notice-title { font-weight: bold; margin-bottom: 10px; display: flex; align-items: center; }
         .notice-title i { margin-right: 8px; }
         .notice-box ul { padding-left: 20px; margin: 0; }
@@ -138,20 +198,27 @@
 
         /* --- 懸浮按鈕 --- */
         .floating-sidebar {
-            position: fixed; right: 15px; top: 55%; transform: translateY(-50%);
+            position: fixed; right: 15px; top: 60%; transform: translateY(-50%);
             z-index: 100; display: flex; flex-direction: column; gap: 12px;
         }
         .float-btn {
             width: 48px; height: 48px; border-radius: 50%; background: white;
             display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.15); text-decoration: none;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2); text-decoration: none;
             transition: all 0.3s;
         }
         .float-btn i { font-size: 1.4rem; color: var(--primary-blue); }
         .line-btn i { color: #00B900; }
         .ig-btn i { color: #E1306C; }
         .fb-btn i { color: #1877F2; }
-        .float-btn:hover { transform: scale(1.1); }
+        @media (hover: hover) { .float-btn:hover { transform: scale(1.1); } }
+        /* 手機版懸浮按鈕稍微縮小 */
+        @media (max-width: 768px) {
+            .float-btn { width: 42px; height: 42px; }
+            .float-btn i { font-size: 1.2rem; }
+            .floating-sidebar { right: 10px; gap: 10px; }
+        }
+
     </style>
 </head>
 <body>
@@ -179,28 +246,28 @@
                     <label class="form-label">1. 房屋出售成交價 (萬元)</label>
                     <div class="input-group">
                         <div class="input-icon"><i class="fa-solid fa-sack-dollar"></i></div>
-                        <input type="number" class="form-control" id="h_sell" placeholder="例：1500 (賣出總價)">
+                        <input type="number" class="form-control" id="h_sell" placeholder="例：1500 (賣出總價)" inputmode="decimal">
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="form-label">2. 取得成本 (萬元)</label>
                     <div class="input-group">
                         <div class="input-icon"><i class="fa-solid fa-file-invoice-dollar"></i></div>
-                        <input type="number" class="form-control" id="h_cost" placeholder="例：1000 (當初買入價格+裝修)">
+                        <input type="number" class="form-control" id="h_cost" placeholder="例：1000 (當初買入價格+裝修)" inputmode="decimal">
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="form-label">3. 移轉費用 (萬元)</label>
                     <div class="input-group">
                         <div class="input-icon"><i class="fa-solid fa-calculator"></i></div>
-                        <input type="number" class="form-control" id="h_expense" placeholder="例：30 (若無證明可填成交價 3% 上限30萬)">
+                        <input type="number" class="form-control" id="h_expense" placeholder="例：30 (若無證明可填成交價 3% 上限30萬)" inputmode="decimal">
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="form-label">4. 土地漲價總數額 (萬元)</label>
                     <div class="input-group">
                         <div class="input-icon"><i class="fa-solid fa-chart-line"></i></div>
-                        <input type="number" class="form-control" id="h_land_inc" placeholder="例：20 (參考土增稅單 可扣抵獲利)">
+                        <input type="number" class="form-control" id="h_land_inc" placeholder="例：20 (參考土增稅單 可扣抵獲利)" inputmode="decimal">
                     </div>
                 </div>
                 <div class="form-group">
@@ -221,7 +288,7 @@
                     <label class="form-label">6. 重購房屋價格 (萬元)</label>
                     <div class="input-group">
                         <div class="input-icon"><i class="fa-solid fa-house-chimney"></i></div>
-                        <input type="number" class="form-control" id="h_rebuy" placeholder="例：2000 (若無重購請填 0)">
+                        <input type="number" class="form-control" id="h_rebuy" placeholder="例：2000 (若無重購請填 0)" inputmode="decimal">
                     </div>
                 </div>
                 <button class="btn-calc" onclick="calcHouse()">試算房地合一稅</button>
@@ -232,21 +299,21 @@
                     <label class="form-label">1. 原出售地 - 公告現值總額 (萬元)</label>
                     <div class="input-group">
                         <div class="input-icon"><i class="fa-solid fa-arrow-up-from-bracket"></i></div>
-                        <input type="number" class="form-control" id="l_old_val" placeholder="例：350 (賣出當年公告現值 X 面積)">
+                        <input type="number" class="form-control" id="l_old_val" placeholder="例：350 (賣出當年公告現值 X 面積)" inputmode="decimal">
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="form-label">2. 新重購地 - 公告現值總額 (萬元)</label>
                     <div class="input-group">
                         <div class="input-icon"><i class="fa-solid fa-arrow-down-to-bracket"></i></div>
-                        <input type="number" class="form-control" id="l_new_val" placeholder="例：400 (買入當年公告現值 X 面積)">
+                        <input type="number" class="form-control" id="l_new_val" placeholder="例：400 (買入當年公告現值 X 面積)" inputmode="decimal">
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="form-label">3. 已繳納土增稅額 (萬元)</label>
                     <div class="input-group">
                         <div class="input-icon"><i class="fa-solid fa-receipt"></i></div>
-                        <input type="number" class="form-control" id="l_tax" placeholder="例：15 (請填寫稅單上的『應納稅額』)">
+                        <input type="number" class="form-control" id="l_tax" placeholder="例：15 (請填寫稅單上的『應納稅額』)" inputmode="decimal">
                     </div>
                 </div>
                 <button class="btn-calc" onclick="calcLand()">試算土增稅退稅</button>
@@ -317,7 +384,7 @@
             let sell = parseFloat(document.getElementById('h_sell').value) || 0;
             let cost = parseFloat(document.getElementById('h_cost').value) || 0;
             let expense = parseFloat(document.getElementById('h_expense').value) || 0;
-            let landInc = parseFloat(document.getElementById('h_land_inc').value) || 0; // 土地漲價總數額
+            let landInc = parseFloat(document.getElementById('h_land_inc').value) || 0; 
             let rate = parseFloat(document.getElementById('h_rate').value) || 0;
             let rebuy = parseFloat(document.getElementById('h_rebuy').value) || 0;
 
@@ -328,7 +395,7 @@
             if(profit < 0) profit = 0;
 
             let tax = 0;
-            if(rate === 10) { // 自用滿6年 (400萬免稅)
+            if(rate === 10) { // 自用滿6年
                 let taxable = profit - 400;
                 if(taxable < 0) taxable = 0;
                 tax = taxable * 0.1;
@@ -341,10 +408,10 @@
 
             if(rebuy > 0) {
                 if(rebuy >= sell) {
-                    refund = tax; // 全退
-                    msg = "✨ 買價 > 賣價：符合全額退稅資格！";
+                    refund = tax; 
+                    msg = "✨ 買價 ≥ 賣價：符合全額退稅資格！";
                 } else {
-                    refund = tax * (rebuy / sell); // 比例退
+                    refund = tax * (rebuy / sell); 
                     msg = "✨ 買價 < 賣價：符合比例退稅資格";
                 }
             } else {
@@ -361,27 +428,23 @@
 
         // 2. 土地增值稅試算 (標準重購退稅公式)
         function calcLand() {
-            let oldVal = parseFloat(document.getElementById('l_old_val').value) || 0; // 出售地現值
-            let newVal = parseFloat(document.getElementById('l_new_val').value) || 0; // 重購地現值
-            let paidTax = parseFloat(document.getElementById('l_tax').value) || 0; // 已繳稅額
+            let oldVal = parseFloat(document.getElementById('l_old_val').value) || 0; 
+            let newVal = parseFloat(document.getElementById('l_new_val').value) || 0; 
+            let paidTax = parseFloat(document.getElementById('l_tax').value) || 0; 
 
             if(paidTax === 0 || oldVal === 0 || newVal === 0) { alert("請輸入完整數值！"); return; }
 
-            // 標準公式：(新購現值) - (出售現值 - 已繳稅)
-            // 邏輯：如果你新買的地 (newVal) 比 (賣掉的地扣完稅後拿到的錢) 還要貴，代表你把賺的錢都拿去買新房了，甚至還倒貼，所以退稅。
-            
             let threshold = oldVal - paidTax;
             let refund = 0;
             let msg = "";
 
             if(newVal > threshold) {
                 refund = newVal - threshold;
-                // 退稅金額上限 = 已繳稅額
                 if(refund > paidTax) refund = paidTax;
                 msg = "✨ 符合重購退稅資格！";
             } else {
                 refund = 0;
-                msg = "⚠️ 新購現值不足，無法退稅 (新購現值需大於 賣出前現值減去稅金)";
+                msg = "⚠️ 新購現值不足，無法退稅 (需大於 賣出前現值扣除稅金)";
             }
 
             // 更新 UI
@@ -395,7 +458,8 @@
         function showResult() {
             let box = document.getElementById('result-box');
             box.style.display = 'block';
-            box.scrollIntoView({behavior: "smooth", block: "nearest"});
+            // 手機上滾動時留點邊距
+            box.scrollIntoView({behavior: "smooth", block: "center"});
         }
     </script>
 </body>
