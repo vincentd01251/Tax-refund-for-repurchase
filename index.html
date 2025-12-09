@@ -14,22 +14,18 @@
             --white: #ffffff;
             --warning-bg: #fff8e1;
             --warning-text: #856404;
+            --success-green: #28a745;
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
-        /* 確保 html 和 body 不會產生水平滾動條 */
-        html, body {
-            overflow-x: hidden;
-            width: 100%;
-        }
+        html, body { overflow-x: hidden; width: 100%; }
 
         body {
             font-family: "PingFang TC", "Microsoft JhengHei", sans-serif;
             background-color: var(--bg-color);
-            margin: 0;
-            padding-bottom: 80px; /* 預留底部空間給懸浮按鈕 */
-            min-height: 100vh;
+            margin: 0; padding-bottom: 40px; min-height: 100vh;
+            display: flex; flex-direction: column;
         }
 
         /* --- Header --- */
@@ -45,78 +41,53 @@
         .brand-name { font-size: 1.1rem; font-weight: 800; color: var(--primary-blue); margin: 0; }
         .brand-title { font-size: 0.8rem; color: #666; margin: 0; }
 
-        /* --- 背景形象照 --- */
         .vincent-bg {
-            position: fixed; bottom: 0; right: -10px; 
-            width: 40vh; max-width: 350px;
+            position: fixed; bottom: 0; right: -10px; width: 40vh; max-width: 350px;
             opacity: 0.9; pointer-events: none; z-index: 0;
             filter: drop-shadow(-5px 5px 10px rgba(0,0,0,0.1));
             transition: all 0.3s ease;
         }
 
-        /* --- 核心卡片區塊 --- */
+        /* --- 核心卡片 --- */
         .container {
-            /* 電腦版預設寬度 */
-            max-width: 700px; 
-            margin: 40px auto; 
-            padding: 0 25px; /* 左右留白 */
-            position: relative; z-index: 10;
+            max-width: 700px; margin: 40px auto 20px auto; padding: 0 25px; 
+            position: relative; z-index: 10; flex: 1;
         }
 
         .calculator-card {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
-            border-radius: 16px; 
-            padding: 30px; /* 電腦版內部留白 */
+            border-radius: 16px; padding: 30px;
             box-shadow: 0 10px 25px rgba(0,96,169, 0.1);
             border: 1px solid rgba(255,255,255,0.8);
         }
 
-        /* --- 📱 重點：手機版針對性優化 (Media Query) --- */
-        /* 當螢幕寬度小於 768px (平板直向或手機) 時應用 */
+        /* 手機適配 */
         @media (max-width: 768px) {
             header { padding: 10px 15px; }
             .logo-area img { height: 35px; }
             .brand-name { font-size: 1rem; }
-
-            .container {
-                margin: 25px auto; /* 上下間距縮小 */
-                padding: 0 12px;   /* 關鍵：左右留白縮小，防止切邊 */
-                width: 100%;       /* 確保佔滿可用空間 */
-            }
-
-            .calculator-card {
-                padding: 20px 15px; /* 關鍵：內部空間縮小，讓內容有更多位置 */
-            }
-
-            /* 背景圖在手機上更透明、更往角落退 */
-            .vincent-bg {
-                width: 50vw; 
-                opacity: 0.25; 
-                right: -30px; /* 往右推避免蓋住內容 */
-            }
+            .container { margin: 25px auto; padding: 0 12px; width: 100%; }
+            .calculator-card { padding: 20px 15px; }
+            .vincent-bg { width: 50vw; opacity: 0.25; right: -30px; }
         }
 
-        /* --- 切換開關 --- */
+        /* 切換開關 */
         .tax-switch {
-            display: flex; background: #e0e0e0; border-radius: 10px;
-            padding: 4px; margin-bottom: 25px;
+            display: flex; background: #e0e0e0; border-radius: 10px; padding: 4px; margin-bottom: 25px;
         }
         .switch-btn {
             flex: 1; padding: 12px; border: none; background: transparent;
             font-size: 1rem; font-weight: bold; color: #666;
-            cursor: pointer; border-radius: 8px; transition: all 0.3s;
-            white-space: nowrap; /* 防止文字換行 */
+            cursor: pointer; border-radius: 8px; transition: all 0.3s; white-space: nowrap;
         }
         .switch-btn.active {
             background: var(--white); color: var(--primary-blue);
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
-        /* 手機版切換按鈕稍微縮小字體 */
         @media (max-width: 400px) { .switch-btn { font-size: 0.9rem; padding: 10px; } }
 
-
-        /* --- 表單通用 --- */
+        /* 表單樣式 */
         .form-section { display: none; animation: fadeIn 0.4s; }
         .form-section.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
@@ -130,14 +101,11 @@
         }
         .input-group:focus-within { border-color: var(--accent-cyan); }
         .input-icon { padding: 12px 15px; background: #f8f9fa; color: #666; border-right: 1px solid #ddd; font-size: 1.1rem; }
-        
         .form-control { 
             width: 100%; padding: 12px; border: none; font-size: 1.1rem; 
-            outline: none; background: transparent; color: #333;
-            min-width: 0; /* 修復 flex 子元素溢出問題 */
+            outline: none; background: transparent; color: #333; min-width: 0;
         }
         
-        /* 手機版輸入框微調 */
         @media (max-width: 768px) {
             .form-label { font-size: 0.95rem; margin-bottom: 4px; }
             .form-control { padding: 10px; font-size: 1rem; }
@@ -145,50 +113,54 @@
             .form-group { margin-bottom: 15px; }
         }
 
-
-        /* Placeholder 樣式 (65% 顯示度) */
+        /* Placeholder */
         ::-webkit-input-placeholder { color: rgba(0, 0, 0, 0.65); font-weight: 500; }
         :-moz-placeholder { color: rgba(0, 0, 0, 0.65); opacity: 1; font-weight: 500; }
         ::placeholder { color: rgba(0, 0, 0, 0.65); font-weight: 500; }
 
+        /* 按鈕群組 */
+        .btn-group { margin-top: 20px; display: flex; flex-direction: column; gap: 10px; }
+        
         .btn-calc {
-            width: 100%; padding: 16px; margin-top: 10px;
+            width: 100%; padding: 16px;
             background: linear-gradient(to right, var(--primary-blue), var(--accent-cyan));
             color: white; border: none; border-radius: 8px;
             font-size: 1.2rem; font-weight: bold; cursor: pointer;
-            box-shadow: 0 5px 15px rgba(0,96,169, 0.2);
-            transition: transform 0.2s;
+            box-shadow: 0 5px 15px rgba(0,96,169, 0.2); transition: transform 0.2s;
         }
         .btn-calc:active { transform: scale(0.98); }
 
-        /* --- 結果區 --- */
+        /* 複製按鈕 */
+        .btn-copy {
+            width: 100%; padding: 14px;
+            background: white; border: 2px solid var(--primary-blue);
+            color: var(--primary-blue); border-radius: 8px;
+            font-size: 1.1rem; font-weight: bold; cursor: pointer;
+            display: none; /* 預設隱藏，計算後顯示 */
+            align-items: center; justify-content: center;
+        }
+        .btn-copy:hover { background: #f0f8ff; }
+        .btn-copy i { margin-right: 8px; }
+
+        /* 結果區 */
         .result-area {
             margin-top: 25px; padding: 20px;
             background: #EAF6FF; border-radius: 10px;
-            border-left: 5px solid var(--primary-blue);
-            display: none;
+            border-left: 5px solid var(--primary-blue); display: none;
         }
         .result-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; }
         .result-label { font-size: 1rem; color: #555; }
         .result-val { font-size: 1.5rem; font-weight: bold; color: var(--primary-blue); white-space: nowrap; }
         .refund-msg { 
             margin-top: 15px; padding-top: 15px; border-top: 1px dashed #bcd;
-            color: #28a745; font-weight: bold; font-size: 1.1rem; text-align: center;
-            line-height: 1.4;
-        }
-        /* 手機版結果區微調 */
-        @media (max-width: 400px) {
-            .result-val { font-size: 1.3rem; }
-            .result-label { font-size: 0.95rem; }
+            color: var(--success-green); font-weight: bold; font-size: 1.1rem; text-align: center; line-height: 1.4;
         }
 
-
-        /* --- 重要提醒 --- */
+        /* 提醒區 */
         .notice-box {
             margin-top: 30px; background: var(--warning-bg);
             padding: 20px; border-radius: 10px; color: var(--warning-text);
-            border: 1px solid #ffeeba; font-size: 0.95rem;
-            line-height: 1.6;
+            border: 1px solid #ffeeba; font-size: 0.95rem; line-height: 1.6;
         }
         @media (max-width: 768px) { .notice-box { padding: 15px; } }
         .notice-title { font-weight: bold; margin-bottom: 10px; display: flex; align-items: center; }
@@ -196,7 +168,13 @@
         .notice-box ul { padding-left: 20px; margin: 0; }
         .notice-box li { margin-bottom: 6px; }
 
-        /* --- 懸浮按鈕 --- */
+        .footer-copyright {
+            text-align: center; font-size: 0.8rem; color: #888;
+            margin-top: 20px; padding: 15px 10px; line-height: 1.6;
+            position: relative; z-index: 20;
+        }
+
+        /* 懸浮按鈕 */
         .floating-sidebar {
             position: fixed; right: 15px; top: 60%; transform: translateY(-50%);
             z-index: 100; display: flex; flex-direction: column; gap: 12px;
@@ -204,21 +182,27 @@
         .float-btn {
             width: 48px; height: 48px; border-radius: 50%; background: white;
             display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2); text-decoration: none;
-            transition: all 0.3s;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2); text-decoration: none; transition: all 0.3s;
         }
         .float-btn i { font-size: 1.4rem; color: var(--primary-blue); }
         .line-btn i { color: #00B900; }
         .ig-btn i { color: #E1306C; }
         .fb-btn i { color: #1877F2; }
-        @media (hover: hover) { .float-btn:hover { transform: scale(1.1); } }
-        /* 手機版懸浮按鈕稍微縮小 */
         @media (max-width: 768px) {
             .float-btn { width: 42px; height: 42px; }
             .float-btn i { font-size: 1.2rem; }
             .floating-sidebar { right: 10px; gap: 10px; }
         }
 
+        /* 複製成功的提示 Toast */
+        #toast {
+            visibility: hidden; min-width: 250px; background-color: #333; color: #fff;
+            text-align: center; border-radius: 50px; padding: 16px; position: fixed;
+            z-index: 2000; left: 50%; bottom: 30px; transform: translateX(-50%); font-size: 1rem;
+        }
+        #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
+        @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
+        @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
     </style>
 </head>
 <body>
@@ -243,55 +227,33 @@
 
             <div id="form-house" class="form-section active">
                 <div class="form-group">
-                    <label class="form-label">1. 房屋出售成交價 (萬元)</label>
+                    <label class="form-label">1. 賣出總價 (萬元)</label>
                     <div class="input-group">
                         <div class="input-icon"><i class="fa-solid fa-sack-dollar"></i></div>
-                        <input type="number" class="form-control" id="h_sell" placeholder="例：1500 (賣出總價)" inputmode="decimal">
+                        <input type="number" class="form-control" id="h_sell" placeholder="例：1500" inputmode="decimal">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">2. 取得成本 (萬元)</label>
-                    <div class="input-group">
-                        <div class="input-icon"><i class="fa-solid fa-file-invoice-dollar"></i></div>
-                        <input type="number" class="form-control" id="h_cost" placeholder="例：1000 (當初買入價格+裝修)" inputmode="decimal">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">3. 移轉費用 (萬元)</label>
-                    <div class="input-group">
-                        <div class="input-icon"><i class="fa-solid fa-calculator"></i></div>
-                        <input type="number" class="form-control" id="h_expense" placeholder="例：30 (若無證明可填成交價 3% 上限30萬)" inputmode="decimal">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">4. 土地漲價總數額 (萬元)</label>
-                    <div class="input-group">
-                        <div class="input-icon"><i class="fa-solid fa-chart-line"></i></div>
-                        <input type="number" class="form-control" id="h_land_inc" placeholder="例：20 (參考土增稅單 可扣抵獲利)" inputmode="decimal">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">5. 持有期間 (稅率)</label>
-                    <div class="input-group">
-                        <div class="input-icon"><i class="fa-solid fa-clock"></i></div>
-                        <select class="form-control" id="h_rate">
-                            <option value="" disabled selected hidden>請選擇持有期間</option>
-                            <option value="45">2年以內 (45%)</option>
-                            <option value="35">2~5年 (35%)</option>
-                            <option value="20">5~10年 (20%)</option>
-                            <option value="15">10年以上 (15%)</option>
-                            <option value="10">自用滿6年 (400萬免稅+10%)</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">6. 重購房屋價格 (萬元)</label>
+                    <label class="form-label">2. 重購總價 (萬元)</label>
                     <div class="input-group">
                         <div class="input-icon"><i class="fa-solid fa-house-chimney"></i></div>
-                        <input type="number" class="form-control" id="h_rebuy" placeholder="例：2000 (若無重購請填 0)" inputmode="decimal">
+                        <input type="number" class="form-control" id="h_rebuy" placeholder="例：2000" inputmode="decimal">
                     </div>
                 </div>
-                <button class="btn-calc" onclick="calcHouse()">試算房地合一稅</button>
+                <div class="form-group">
+                    <label class="form-label">3. 已繳納(或應繳)稅額 (萬元)</label>
+                    <div class="input-group">
+                        <div class="input-icon"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+                        <input type="number" class="form-control" id="h_tax_paid" placeholder="例：100" inputmode="decimal">
+                    </div>
+                </div>
+                
+                <div class="btn-group">
+                    <button class="btn-calc" onclick="calcHouse()">試算退稅金額</button>
+                    <button id="btn-copy-house" class="btn-copy" onclick="copyResult('house')">
+                        <i class="fa-regular fa-copy"></i> 複製試算結果
+                    </button>
+                </div>
             </div>
 
             <div id="form-land" class="form-section">
@@ -299,30 +261,36 @@
                     <label class="form-label">1. 原出售地 - 公告現值總額 (萬元)</label>
                     <div class="input-group">
                         <div class="input-icon"><i class="fa-solid fa-arrow-up-from-bracket"></i></div>
-                        <input type="number" class="form-control" id="l_old_val" placeholder="例：350 (賣出當年公告現值 X 面積)" inputmode="decimal">
+                        <input type="number" class="form-control" id="l_old_val" placeholder="例：350 (賣出當年公告現值)" inputmode="decimal">
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="form-label">2. 新重購地 - 公告現值總額 (萬元)</label>
                     <div class="input-group">
                         <div class="input-icon"><i class="fa-solid fa-arrow-down-to-bracket"></i></div>
-                        <input type="number" class="form-control" id="l_new_val" placeholder="例：400 (買入當年公告現值 X 面積)" inputmode="decimal">
+                        <input type="number" class="form-control" id="l_new_val" placeholder="例：400 (買入當年公告現值)" inputmode="decimal">
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="form-label">3. 已繳納土增稅額 (萬元)</label>
                     <div class="input-group">
                         <div class="input-icon"><i class="fa-solid fa-receipt"></i></div>
-                        <input type="number" class="form-control" id="l_tax" placeholder="例：15 (請填寫稅單上的『應納稅額』)" inputmode="decimal">
+                        <input type="number" class="form-control" id="l_tax" placeholder="例：15" inputmode="decimal">
                     </div>
                 </div>
-                <button class="btn-calc" onclick="calcLand()">試算土增稅退稅</button>
+                
+                <div class="btn-group">
+                    <button class="btn-calc" onclick="calcLand()">試算退稅金額</button>
+                    <button id="btn-copy-land" class="btn-copy" onclick="copyResult('land')">
+                        <i class="fa-regular fa-copy"></i> 複製試算結果
+                    </button>
+                </div>
             </div>
 
             <div id="result-box" class="result-area">
                 <div class="result-row">
-                    <span class="result-label" id="res-label-tax">預估應納稅額：</span>
-                    <span class="result-val" id="res-tax">0</span>
+                    <span class="result-label" id="res-label-paid">已繳/應繳稅額：</span>
+                    <span class="result-val" id="res-paid">0</span>
                 </div>
                 <div class="result-row">
                     <span class="result-label">預估可退稅額：</span>
@@ -337,7 +305,8 @@
                     <li><b>時效限制：</b>無論先買後賣或先賣後買，時間差距需在 <b>2年內</b>。</li>
                     <li><b>房地合一稅 (市價比較)：</b>
                         <ul>
-                            <li>大屋換小屋：按比例退稅。小屋換大屋：全額退稅。</li>
+                            <li>小屋換大屋 (買價 > 賣價)：全額退稅。</li>
+                            <li>大屋換小屋 (買價 < 賣價)：比例退稅。</li>
                             <li>需設籍並居住，無出租營業。</li>
                         </ul>
                     </li>
@@ -351,6 +320,11 @@
                 </ul>
             </div>
         </div>
+
+        <div class="footer-copyright">
+            劉鴻恩 版權所有 &copy; 2025<br>
+            本試算結果僅供參考，實際稅額以稅捐機關核定為準。
+        </div>
     </div>
 
     <div class="floating-sidebar">
@@ -361,105 +335,152 @@
         <a href="https://www.notion.so/fb3196bece3242ceb9b6514134a20cd9" class="float-btn" target="_blank" style="color:#333;"><i class="fa-solid fa-book-open"></i></a>
     </div>
 
+    <div id="toast">已複製文字！</div>
+
     <script>
         // 切換模式
         function setMode(mode) {
             document.querySelectorAll('.switch-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll('.form-section').forEach(sec => sec.classList.remove('active'));
             document.getElementById('result-box').style.display = 'none';
+            // 隱藏複製按鈕
+            document.getElementById('btn-copy-house').style.display = 'none';
+            document.getElementById('btn-copy-land').style.display = 'none';
 
             if(mode === 'house') {
                 document.querySelectorAll('.switch-btn')[0].classList.add('active');
                 document.getElementById('form-house').classList.add('active');
-                document.getElementById('res-label-tax').innerText = "預估應納稅額：";
             } else {
                 document.querySelectorAll('.switch-btn')[1].classList.add('active');
                 document.getElementById('form-land').classList.add('active');
-                document.getElementById('res-label-tax').innerText = "已繳納稅額：";
             }
         }
 
-        // 1. 房地合一稅試算 (標準公式)
+        // 1. 極簡房地合一試算
         function calcHouse() {
             let sell = parseFloat(document.getElementById('h_sell').value) || 0;
-            let cost = parseFloat(document.getElementById('h_cost').value) || 0;
-            let expense = parseFloat(document.getElementById('h_expense').value) || 0;
-            let landInc = parseFloat(document.getElementById('h_land_inc').value) || 0; 
-            let rate = parseFloat(document.getElementById('h_rate').value) || 0;
             let rebuy = parseFloat(document.getElementById('h_rebuy').value) || 0;
+            let paidTax = parseFloat(document.getElementById('h_tax_paid').value) || 0;
 
-            if(sell === 0 || cost === 0) { alert("請輸入成交價與成本！"); return; }
-
-            // 獲利公式：成交價 - 成本 - 費用 - 土地漲價總數額
-            let profit = sell - cost - expense - landInc;
-            if(profit < 0) profit = 0;
-
-            let tax = 0;
-            if(rate === 10) { // 自用滿6年
-                let taxable = profit - 400;
-                if(taxable < 0) taxable = 0;
-                tax = taxable * 0.1;
-            } else {
-                tax = profit * (rate / 100);
-            }
+            if(sell === 0 || paidTax === 0) { alert("請輸入賣出總價與稅額！"); return; }
 
             let refund = 0;
             let msg = "";
-
+            
             if(rebuy > 0) {
                 if(rebuy >= sell) {
-                    refund = tax; 
-                    msg = "✨ 買價 ≥ 賣價：符合全額退稅資格！";
+                    refund = paidTax;
+                    msg = "✨ 小屋換大屋 (買 > 賣)：恭喜！符合全額退稅資格";
                 } else {
-                    refund = tax * (rebuy / sell); 
-                    msg = "✨ 買價 < 賣價：符合比例退稅資格";
+                    refund = paidTax * (rebuy / sell);
+                    msg = "✨ 大屋換小屋 (買 < 賣)：符合比例退稅資格";
                 }
             } else {
-                msg = "無重購計畫，無法退稅";
+                msg = "無重購金額，無法計算退稅";
             }
 
-            // 更新 UI
-            document.getElementById('res-tax').innerText = Math.round(tax).toLocaleString() + " 萬";
-            document.getElementById('res-refund').innerText = Math.round(refund).toLocaleString() + " 萬";
-            document.getElementById('res-msg').innerText = msg;
-            
-            showResult();
+            // UI 更新
+            updateResultUI(paidTax, refund, msg);
+            // 顯示複製按鈕
+            document.getElementById('btn-copy-house').style.display = 'flex';
         }
 
-        // 2. 土地增值稅試算 (標準重購退稅公式)
+        // 2. 土地增值稅試算
         function calcLand() {
-            let oldVal = parseFloat(document.getElementById('l_old_val').value) || 0; 
-            let newVal = parseFloat(document.getElementById('l_new_val').value) || 0; 
-            let paidTax = parseFloat(document.getElementById('l_tax').value) || 0; 
+            let oldVal = parseFloat(document.getElementById('l_old_val').value) || 0;
+            let newVal = parseFloat(document.getElementById('l_new_val').value) || 0;
+            let paidTax = parseFloat(document.getElementById('l_tax').value) || 0;
 
             if(paidTax === 0 || oldVal === 0 || newVal === 0) { alert("請輸入完整數值！"); return; }
 
+            // 公式：(新購現值) - (出售現值 - 已繳稅)
             let threshold = oldVal - paidTax;
             let refund = 0;
             let msg = "";
 
             if(newVal > threshold) {
                 refund = newVal - threshold;
-                if(refund > paidTax) refund = paidTax;
+                if(refund > paidTax) refund = paidTax; // 上限為已繳稅
                 msg = "✨ 符合重購退稅資格！";
             } else {
                 refund = 0;
-                msg = "⚠️ 新購現值不足，無法退稅 (需大於 賣出前現值扣除稅金)";
+                msg = "⚠️ 新購現值不足，可能無法退稅";
             }
 
-            // 更新 UI
-            document.getElementById('res-tax').innerText = Math.round(paidTax).toLocaleString() + " 萬";
+            updateResultUI(paidTax, refund, msg);
+            document.getElementById('btn-copy-land').style.display = 'flex';
+        }
+
+        function updateResultUI(paid, refund, msg) {
+            document.getElementById('res-paid').innerText = Math.round(paid).toLocaleString() + " 萬";
             document.getElementById('res-refund').innerText = Math.round(refund).toLocaleString() + " 萬";
             document.getElementById('res-msg').innerText = msg;
             
-            showResult();
-        }
-
-        function showResult() {
             let box = document.getElementById('result-box');
             box.style.display = 'block';
-            // 手機上滾動時留點邊距
             box.scrollIntoView({behavior: "smooth", block: "center"});
+        }
+
+        // 📋 複製功能
+        function copyResult(type) {
+            let text = "";
+            let today = new Date().toLocaleDateString();
+
+            if(type === 'house') {
+                let sell = document.getElementById('h_sell').value;
+                let rebuy = document.getElementById('h_rebuy').value;
+                let paid = document.getElementById('res-paid').innerText;
+                let refund = document.getElementById('res-refund').innerText;
+                let msg = document.getElementById('res-msg').innerText;
+
+                text = `【房地合一稅重購退稅試算】\n` +
+                       `日期：${today}\n` +
+                       `-------------------\n` +
+                       `🏠 賣出總價：${sell} 萬\n` +
+                       `🏠 重購總價：${rebuy} 萬\n` +
+                       `💰 原本稅金：${paid}\n` +
+                       `-------------------\n` +
+                       `💵 預估可退稅：${refund}\n` +
+                       `📝 結果：${msg}\n` +
+                       `-------------------\n` +
+                       `劉鴻恩 協理 Vincent\n` +
+                       `幸福家不動產 九份子加盟店\n` +
+                       `※此結果僅供參考，實際以國稅局核定為準。`;
+
+            } else {
+                let oldVal = document.getElementById('l_old_val').value;
+                let newVal = document.getElementById('l_new_val').value;
+                let paid = document.getElementById('res-paid').innerText;
+                let refund = document.getElementById('res-refund').innerText;
+                let msg = document.getElementById('res-msg').innerText;
+
+                text = `【土地增值稅重購退稅試算】\n` +
+                       `日期：${today}\n` +
+                       `-------------------\n` +
+                       `📤 出售地現值：${oldVal} 萬\n` +
+                       `📥 重購地現值：${newVal} 萬\n` +
+                       `💰 已繳土增稅：${paid}\n` +
+                       `-------------------\n` +
+                       `💵 預估可退稅：${refund}\n` +
+                       `📝 結果：${msg}\n` +
+                       `-------------------\n` +
+                       `劉鴻恩 協理 Vincent\n` +
+                       `幸福家不動產 九份子加盟店\n` +
+                       `※此結果僅供參考，實際以稅捐處核定為準。`;
+            }
+
+            // 執行複製
+            navigator.clipboard.writeText(text).then(function() {
+                showToast();
+            }, function(err) {
+                alert('複製失敗，請手動複製');
+            });
+        }
+
+        function showToast() {
+            let x = document.getElementById("toast");
+            x.className = "show";
+            setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
         }
     </script>
 </body>
